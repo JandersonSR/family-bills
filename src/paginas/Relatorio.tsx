@@ -96,7 +96,7 @@ export default function Relatorio() {
 
   function enviarTexto() {
     if (!dados) return;
-    window.open("https://wa.me/?text=" + encodeURIComponent(textoWhatsApp(dados)), "_blank");
+    window.open("https://wa.me/?text=" + encodeURIComponent(textoWhatsApp(dados)), "_blank", "noopener,noreferrer");
   }
 
   const irPara = (m: string) => navegar(`/relatorio?mes=${m.slice(0, 7)}`, true);

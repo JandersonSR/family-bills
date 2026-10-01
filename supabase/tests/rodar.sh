@@ -10,3 +10,4 @@ $P -d contas_teste -f tests/_stub_supabase.sql >/dev/null
 for m in migrations/*.sql; do $P -d contas_teste -f "$m" >/dev/null; done
 $P -d contas_teste -f tests/testes.sql 2>&1 | grep -oE "(ok.*|FALHOU.*|TODOS.*|ERROR.*)"
 $P -d contas_teste -f tests/testes_2.sql 2>&1 | grep -oE "(ok.*|FALHOU.*|TODOS.*|ERROR.*)"
+$P -d contas_teste -f tests/testes_3.sql 2>&1 | grep -oE "(ok.*|FALHOU.*|TODOS.*|ERROR.*)"

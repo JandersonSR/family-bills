@@ -29,13 +29,14 @@ export function mensagemErro(e: unknown): string {
     [/invalid login credentials/i, "E-mail ou senha incorretos."],
     [/email not confirmed/i, "Você ainda não confirmou seu e-mail. Veja a mensagem que enviamos para sua caixa de entrada."],
     [/already registered|already been registered/i, "Já existe uma conta com este e-mail. Tente entrar."],
-    [/password should be at least|weak password/i, "A senha precisa ter pelo menos 6 caracteres."],
+    [/password should be at least|weak password/i, "A senha é fraca. Use pelo menos 8 caracteres, misturando letras e números."],
     [/rate limit|too many/i, "Muitas tentativas seguidas. Espere alguns minutos e tente de novo."],
     [/failed to fetch|network/i, "Sem conexão com a internet. Verifique e tente de novo."],
     [/payload too large|exceeded the maximum/i, "O arquivo é grande demais (máximo 5 MB)."],
     [/mime type/i, "Tipo de arquivo não aceito. Use foto (JPG/PNG) ou PDF."],
     [/row-level security|permission denied/i, "Você não tem permissão para fazer isso."],
     [/same_password|different from the old/i, "A nova senha precisa ser diferente da atual."],
+    [/comprovante_do_lancamento/i, "Não foi possível guardar o comprovante neste registro. Volte para a tela do mês e tente de novo."],
     [/lancamentos_baixa_unica|duplicate key/i, "Essa conta já foi marcada como paga neste mês (talvez por outra pessoa). Volte e confira a lista."],
   ];
   for (const [re, txt] of mapa) if (re.test(msg)) return txt;

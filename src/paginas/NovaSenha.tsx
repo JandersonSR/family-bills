@@ -12,7 +12,7 @@ export default function NovaSenha() {
   async function salvar(e: FormEvent) {
     e.preventDefault();
     setErro("");
-    if (senha.length < 6) return setErro("A senha precisa ter pelo menos 6 caracteres.");
+    if (senha.length < 8) return setErro("A senha precisa ter pelo menos 8 caracteres.");
     if (senha !== senha2) return setErro("As duas senhas estão diferentes.");
     setEnviando(true);
     const { error } = await supabase.auth.updateUser({ password: senha });
@@ -27,7 +27,7 @@ export default function NovaSenha() {
       <Topo titulo="Nova senha" voltarPara="/" />
       <form onSubmit={salvar} className="form">
         <label>
-          Nova senha (mínimo 6 caracteres)
+          Nova senha (mínimo 8 caracteres)
           <CampoSenha autoComplete="new-password" required value={senha} onChange={(e) => setSenha(e.target.value)} />
         </label>
         <label>

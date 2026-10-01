@@ -110,13 +110,14 @@ select pg_temp.falha($$select remover_membro((select g from ctx), '00000000-0000
 reset role;
 
 -- Limpeza: lançamento antigo some, resumo fica
-insert into lancamentos (grupo_id, tipo, descricao, valor_centavos, data, criado_por, comprovante_path)
-  select g, 'deposito', 'Antigo', 50000, '2025-01-10', '00000000-0000-0000-0000-00000000000a', g::text || '/velho.jpg' from ctx;
+insert into lancamentos (id, grupo_id, tipo, descricao, valor_centavos, data, criado_por, comprovante_path)
+  select '30000000-0000-0000-0000-000000000001', g, 'deposito', 'Antigo', 50000, '2025-01-10', '00000000-0000-0000-0000-00000000000a',
+         g::text || '/30000000-0000-0000-0000-000000000001-1.jpg' from ctx;
 select pg_temp.check((select entradas_centavos from resumos_mensais where mes='2025-01-01') = 50000, 'resumo do antigo');
 set role service_role;
 create temp table apagados as select * from limpar_lancamentos_antigos(6);
 reset role;
-select pg_temp.check((select count(*) from apagados) = 1 and (select caminho from apagados) like '%/velho.jpg', 'limpeza devolve caminho do arquivo');
+select pg_temp.check((select count(*) from apagados) = 1 and (select caminho from apagados) like '%/30000000-0000-0000-0000-000000000001-1.jpg', 'limpeza devolve caminho do arquivo');
 select pg_temp.check(not exists (select 1 from lancamentos where descricao='Antigo'), 'antigo apagado');
 select pg_temp.check(exists (select 1 from lancamentos where descricao='Luz'), 'agosto/2026 mantido (dentro de 6 meses)');
 select pg_temp.check((select entradas_centavos from resumos_mensais where mes='2025-01-01') = 50000, 'resumo preservado após limpeza');

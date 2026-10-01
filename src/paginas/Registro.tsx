@@ -144,7 +144,8 @@ export default function Registro({ id, tipoNovo }: { id?: string; tipoNovo?: Tip
       if (arquivo) {
         const { blob, ext, tipo: mime } = await prepararArquivo(arquivo);
         if (blob.size > LIMITE_BYTES) throw new Error("O arquivo é grande demais (máximo 5 MB).");
-        caminhoNovo = `${grupo.id}/${regId}-${Date.now()}.${ext}`;
+        // a pasta é a do grupo do registro (a política do banco exige isso)
+        caminhoNovo = `${original?.grupo_id ?? grupo.id}/${regId}-${Date.now()}.${ext}`;
         const up = await supabase.storage.from(BUCKET).upload(caminhoNovo, blob, { contentType: mime });
         if (up.error) throw up.error;
       }
@@ -198,6 +199,7 @@ export default function Registro({ id, tipoNovo }: { id?: string; tipoNovo?: Tip
     if (!original?.comprovante_path) return;
     // abre a aba antes do await para o navegador não bloquear o pop-up
     const aba = window.open("", "_blank");
+    if (aba) aba.opener = null;
     const { data: s, error } = await supabase.storage.from(BUCKET).createSignedUrl(original.comprovante_path, 600);
     if (error || !s) {
       aba?.close();

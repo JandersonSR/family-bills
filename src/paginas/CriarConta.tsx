@@ -14,7 +14,7 @@ export default function CriarConta() {
   async function criar(e: FormEvent) {
     e.preventDefault();
     setErro("");
-    if (senha.length < 6) return setErro("A senha precisa ter pelo menos 6 caracteres.");
+    if (senha.length < 8) return setErro("A senha precisa ter pelo menos 8 caracteres.");
     if (senha !== senha2) return setErro("As duas senhas estão diferentes.");
     setEnviando(true);
     const { data, error } = await supabase.auth.signUp({
@@ -44,7 +44,7 @@ export default function CriarConta() {
         <form onSubmit={criar} className="form">
           <label>
             Seu nome
-            <input autoComplete="name" required value={nome} onChange={(e) => setNome(e.target.value)} />
+            <input autoComplete="name" required maxLength={80} value={nome} onChange={(e) => setNome(e.target.value)} />
           </label>
           <label>
             E-mail
@@ -52,7 +52,7 @@ export default function CriarConta() {
             <small className="suave">Se você recebeu um convite, use o mesmo e-mail do convite.</small>
           </label>
           <label>
-            Senha (mínimo 6 caracteres)
+            Senha (mínimo 8 caracteres)
             <CampoSenha autoComplete="new-password" required value={senha} onChange={(e) => setSenha(e.target.value)} />
           </label>
           <label>
