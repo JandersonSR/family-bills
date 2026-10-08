@@ -1,0 +1,43 @@
+# Mantém o projeto Supabase ativo.
+# No plano gratuito, o Supabase pausa o projeto após ~7 dias sem uso.
+# Esta rotina faz uma consulta leve ao banco a cada 3 dias.
+#
+# Precisa de 2 secrets no repositório (Settings → Secrets and variables → Actions):
+#   SUPABASE_URL = https://SEU-PROJETO.supabase.co
+#   SUPABASE_KEY = chave publishable (sb_publishable_...)
+
+name: Manter Supabase ativo
+
+on:
+  schedule:
+    - cron: "17 12 */3 * *" # a cada 3 dias, 09:17 em Brasília
+  workflow_dispatch: {} # permite rodar na mão pela aba Actions
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Consultar o banco
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "::error::Cadastre os secrets SUPABASE_URL e SUPABASE_KEY"
+            exit 1
+          fi
+          status=$(curl -s -o resposta.txt -w "%{http_code}" \
+            --retry 3 --retry-delay 10 \
+            "$SUPABASE_URL/rest/v1/grupos?select=id&limit=1" \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY")
+          echo "HTTP $status"
+          cat resposta.txt; echo
+          if [ "$status" != "200" ]; then
+            echo "::error::Supabase respondeu $status. O projeto pode estar pausado: abra o painel e clique em Resume project."
+            exit 1
+          fi
